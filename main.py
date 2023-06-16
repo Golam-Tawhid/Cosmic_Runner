@@ -20,8 +20,8 @@ back_surface = pygame.image.load('image/xBJPpY.gif').convert()
 ground_surface = pygame.image.load('image/ground1.png').convert_alpha()  # convert used to make the game run faster
 
 # text surface
-text_surface = test_font.render('Welcome', True, 'Black')  # text, AA(Anti-aliasing, color
-
+text_surface = test_font.render('Vaag Bug', True, 'Black')  # text, AA(Anti-aliasing), color
+text_rect = text_surface.get_rect(center = (376, 40))
 # image surface
 bug_surface = pygame.image.load("image/bug100.png").convert_alpha()
 bug_x = 800
@@ -42,9 +42,17 @@ while True:
             pygame.quit()  # this is the opposite of init()
             exit()  # this will stop the while loop
 
+        # if event.type == pygame.MOUSEMOTION: #to get mouse position
+        #     if player_rect.collidepoint(event.pos):
+        #         print('Collision')
+        # pygame.MOUSEBUTTONUP / MOUSEBUTTONDOWN to check if mouse button pressed or released
+
+
     screen.blit(back_surface, (0, 0))  # adding the surface to the display surface with given position
     screen.blit(ground_surface, (0, 450))
-    screen.blit(text_surface, (300, 150))
+    pygame.draw.rect(screen, 'Cyan', text_rect)
+    pygame.draw.rect(screen, 'Green', text_rect, 10)
+    screen.blit(text_surface, text_rect)
 
     bug_rect.x -= 3
 
@@ -60,8 +68,12 @@ while True:
     screen.blit(player_surf, player_rect)
 
     # collision check
-    if player_rect.colliderect(bug_rect):
-        print('collision')
+    # if player_rect.colliderect(bug_rect):
+    #     print('collision')
+
+    # mouse_pos = pygame.mouse.get_pos()
+    # if player_rect.collidepoint(mouse_pos):
+    #     print(pygame.mouse.get_pressed())
 
     pygame.display.update()
     clock.tick(60)  # the loop will not run faster than 60

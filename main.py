@@ -60,7 +60,8 @@ while True:
     screen.blit(player_surf, player_rect)
 
     # collision check
-    print(player_rect.colliderect(bug_rect))
+    if player_rect.colliderect(bug_rect):
+        print('collision')
 
     pygame.display.update()
     clock.tick(60)  # the loop will not run faster than 60

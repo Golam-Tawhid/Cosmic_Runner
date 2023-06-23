@@ -3,8 +3,8 @@ from sys import exit
 # from pygame.time import Clock
 
 def display_score():
-    current_time = pygame.time.get_ticks() - star_time
-    score_surf = test_font.render(f'{current_time}', True, "Yellow")
+    current_time = int(pygame.time.get_ticks() / 1000) - star_time #converting it to readable value
+    score_surf = test_font.render(f'Score:{current_time}', True, "Yellow")
     score_rect = score_surf.get_rect(center = (376,100))
     screen.blit(score_surf, score_rect)
 
@@ -36,13 +36,15 @@ bug_surface = pygame.image.load("image/bug100.png").convert_alpha()
 bug_x = 800
 bug_rect = bug_surface.get_rect(topleft=(800, 430))
 
-player_surf = pygame.image.load('image/pRun180.png').convert_alpha()
+player_surf = pygame.image.load("im").convert_alpha()
 
 # creating rectangle
 # player_rect = pygame.Rect()  # left,top,width,height
 player_rect = player_surf.get_rect(bottomleft=(100, 500))  # create rectangle around the surface
 # changing the rectangle position will change the player position
 player_gravity = 0
+
+player_stand= pygame.image.load()
 while True:
     # draw all elements here
     # update everything in the loop
@@ -67,7 +69,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 bug_rect.left = 800
-                star_time = pygame.time.get_ticks()
+                star_time = int(pygame.time.get_ticks() / 1000)
 
         # if event.type == pygame.MOUSEMOTION: #to get mouse position
         #     if player_rect.collidepoint(event.pos):
@@ -120,6 +122,8 @@ while True:
 
         if bug_rect.colliderect(player_rect):
             game_active=False
+    else:
+        screen.fill((94,129,162))
     
 
     pygame.display.update()

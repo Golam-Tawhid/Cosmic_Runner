@@ -29,6 +29,17 @@ def collisions(player, obstacles):
                 return False
     return True     
 
+def player_animation():
+    global player_surf, player_index
+
+    if player_rect.bottom<300:
+        player_surf= player_jump
+    else:
+        player_index += 0.05
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surf = player_walk[int(player_index)]
+
 pygame.init()
 screen = pygame.display.set_mode((752, 600))
 screen.fill('White')
@@ -41,7 +52,7 @@ game_active = False
 start_time = 0
 score = 0
 
-back_surface = pygame.image.load('image/xBJPpY.gif').convert()
+back_surface = pygame.image.load('image/back.gif').convert()
 ground_surface = pygame.image.load('image/ground1.png').convert_alpha()
 
 text_surface = test_font.render('Vaag Bug', True, '#080202')
@@ -52,11 +63,17 @@ fly_surface = pygame.image.load("image/fly50.png").convert_alpha()
 
 obstacle_rect_list = []
 
-player_surf = pygame.image.load("image/pooh2.png").convert_alpha()
+player_walk1 = pygame.image.load("image/gm1.png").convert_alpha()
+player_walk2 = pygame.image.load("image/gm2.png").convert_alpha() 
+player_walk=[player_walk1, player_walk2]
+player_index=0
+player_jump= pygame.image.load("image/gm3.png").convert_alpha()
+
+player_surf = player_walk[player_index]
 player_rect = player_surf.get_rect(bottomleft=(100, 500))
 player_gravity = 0
 
-player_stand = pygame.image.load("image/pooh2.gif").convert_alpha()
+player_stand = pygame.image.load("image/gm.png").convert_alpha()
 player_stand = pygame.transform.rotozoom(player_stand, 0, 1)
 player_stand_rect = player_stand.get_rect(center=(376, 300))
 
@@ -76,8 +93,8 @@ while True:
             exit()
         if game_active:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player_rect.bottom >= 500:
-                    player_gravity = -25
+                if event.key == pygame.K_SPACE and player_rect.bottom >= 480:
+                    player_gravity = -21
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
@@ -93,14 +110,16 @@ while True:
         screen.blit(ground_surface, (0, 450))
         # pygame.draw.rect(screen, "#99DBF5", text_rect)
         # pygame.draw.rect(screen, 'Green', text_rect, 10)
-        
+        # screen.blit(text_surface, text_rect)
+
         score = display_score()
 
         player_gravity += 1
         player_rect.y += player_gravity
 
-        if player_rect.bottom >= 500:
-            player_rect.bottom = 500
+        if player_rect.bottom >= 480:
+            player_rect.bottom = 480
+        player_animation()
         screen.blit(player_surf, player_rect)
 
         obstacle_rect_list = obstacle_movement(obstacle_rect_list)
@@ -110,7 +129,7 @@ while True:
         screen.fill((94, 129, 162))
         screen.blit(player_stand, player_stand_rect)
         obstacle_rect_list.clear()
-        player_rect.bottomleft = (100, 500)
+        player_rect.bottomleft = (100, 480)
         player_gravity = 0
 
         score_msg = test_font.render(f'Your Score: {score}', True, '#0C134F')

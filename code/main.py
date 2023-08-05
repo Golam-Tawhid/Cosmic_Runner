@@ -38,6 +38,18 @@ def collisions(player, obstacles):
             if player.colliderect(obstacle_rect):
                 return False
     return True     
+def player_animation():
+    global player_surf, player_index
+
+    if player_rect.bottom<300:
+        player_surf= player_jump
+    else:
+        player_index += 0.05
+        if player_index >= len(player_walk):
+            player_index = 0
+        player_surf = player_walk[int(player_index)]
+
+
 
 pygame.init()  # initializing pygame
 
@@ -57,7 +69,7 @@ score = 0
 # test_surface.fill('Red')  # fill the surface with the given color
 
 # image surface
-back_surface = pygame.image.load('image/xBJPpY.gif').convert()
+back_surface = pygame.image.load('image/back.gif').convert()
 ground_surface = pygame.image.load('image/ground1.png').convert_alpha()  # convert used to make the game run faster
 
 # text surface
@@ -73,14 +85,18 @@ fly_surface=  pygame.image.load("image/fly50.png").convert_alpha()
 
 obstacle_rect_list = []
 
-player_surf = pygame.image.load("image/pooh.png").convert_alpha()
-# creating rectangle
+player_walk1 = pygame.image.load("image/gm1.png").convert_alpha()
+player_walk2 = pygame.image.load("image/gm2.png").convert_alpha() 
+player_walk=[player_walk1, player_walk2]
+player_index=0
+player_jump= pygame.image.load("image/gm3.png").convert_alpha()
 # player_rect = pygame.Rect()  # left,top,width,height
+player_surf= player_walk[player_index]
 player_rect = player_surf.get_rect(bottomleft=(100, 500))  # create rectangle around the surface
 # changing the rectangle position will change the player position
 player_gravity = 0
 #intro screen
-player_stand= pygame.image.load("image/pooh2.gif").convert_alpha() #importing image
+player_stand= pygame.image.load("image/gm.png").convert_alpha() #importing image
 #scale 
 # player_stand = pygame.transform.scale2x(player_stand) #updating the image. Returns new surface (overwrites the previous one)
 #You can also use rotozoom instead of scale. But its more complex. Takes 3 args
@@ -117,8 +133,8 @@ while True:
             #         player_gravity = -25
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE and player_rect.bottom >=500:
-                    player_gravity = -25
+                if event.key == pygame.K_SPACE and player_rect.bottom >=480:
+                    player_gravity = -21
 
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -167,8 +183,9 @@ while True:
         player_gravity += 1
         player_rect.y += player_gravity
 
-        if player_rect.bottom >= 500:
-            player_rect.bottom = 500
+        if player_rect.bottom >= 480:
+            player_rect.bottom = 480
+        player_animation()
         screen.blit(player_surf, player_rect)
 
         #obstacle movement
@@ -198,7 +215,7 @@ while True:
         # screen.blit(player_stand,player_stand_rect)
         screen.blit(player_stand,player_stand_rect)
         obstacle_rect_list.clear()
-        player_rect.bottomleft=(100, 500)
+        player_rect.bottomleft=(100, 480)
         player_gravity = 0
         
 

@@ -32,10 +32,10 @@ def collisions(player, obstacles):
 def player_animation():
     global player_surf, player_index
 
-    if player_rect.bottom<300:
+    if player_rect.bottom<480:
         player_surf= player_jump
     else:
-        player_index += 0.05
+        player_index += 0.12
         if player_index >= len(player_walk):
             player_index = 0
         player_surf = player_walk[int(player_index)]
@@ -63,11 +63,13 @@ fly_surface = pygame.image.load("image/fly50.png").convert_alpha()
 
 obstacle_rect_list = []
 
-player_walk1 = pygame.image.load("image/gm1.png").convert_alpha()
-player_walk2 = pygame.image.load("image/gm2.png").convert_alpha() 
-player_walk=[player_walk1, player_walk2]
+player_walk1 = pygame.image.load("image/rn1.png").convert_alpha()
+player_walk2 = pygame.image.load("image/rn2.png").convert_alpha() 
+player_walk3 = pygame.image.load("image/rn3.png").convert_alpha()
+player_walk4 = pygame.image.load("image/rn4.png").convert_alpha()
+player_walk=[player_walk2, player_walk3, player_walk4, player_walk1]
 player_index=0
-player_jump= pygame.image.load("image/gm3.png").convert_alpha()
+player_jump= pygame.image.load("image/jp.png").convert_alpha()
 
 player_surf = player_walk[player_index]
 player_rect = player_surf.get_rect(bottomleft=(100, 500))
@@ -108,9 +110,10 @@ while True:
     if game_active:
         screen.blit(back_surface, (0, 0))
         screen.blit(ground_surface, (0, 450))
-        # pygame.draw.rect(screen, "#99DBF5", text_rect)
-        # pygame.draw.rect(screen, 'Green', text_rect, 10)
-        # screen.blit(text_surface, text_rect)
+
+        # pygame.draw.rect(screen, "#99DBF5", score_msg_rect)
+        # pygame.draw.rect(screen, 'Green', score_msg_rect, 10)
+        # screen.blit(score_msg, score_msg_rect)
 
         score = display_score()
 
@@ -129,7 +132,7 @@ while True:
         screen.fill((94, 129, 162))
         screen.blit(player_stand, player_stand_rect)
         obstacle_rect_list.clear()
-        player_rect.bottomleft = (100, 480)
+        player_rect.bottomleft = (200, 480)
         player_gravity = 0
 
         score_msg = test_font.render(f'Your Score: {score}', True, '#0C134F')

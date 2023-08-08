@@ -41,10 +41,10 @@ def collisions(player, obstacles):
 def player_animation():
     global player_surf, player_index
 
-    if player_rect.bottom<300:
+    if player_rect.bottom<480:
         player_surf= player_jump
     else:
-        player_index += 0.05
+        player_index += 0.1
         if player_index >= len(player_walk):
             player_index = 0
         player_surf = player_walk[int(player_index)]
@@ -85,11 +85,13 @@ fly_surface=  pygame.image.load("image/fly50.png").convert_alpha()
 
 obstacle_rect_list = []
 
-player_walk1 = pygame.image.load("image/gm1.png").convert_alpha()
-player_walk2 = pygame.image.load("image/gm2.png").convert_alpha() 
-player_walk=[player_walk1, player_walk2]
+player_walk1 = pygame.image.load("image/rn1.png").convert_alpha()
+player_walk2 = pygame.image.load("image/rn2.png").convert_alpha() 
+player_walk3 = pygame.image.load("image/rn3.png").convert_alpha()
+player_walk4 = pygame.image.load("image/rn4.png").convert_alpha()
+player_walk=[player_walk2, player_walk3, player_walk4, player_walk1]
 player_index=0
-player_jump= pygame.image.load("image/gm3.png").convert_alpha()
+player_jump= pygame.image.load("image/jp.png").convert_alpha()
 # player_rect = pygame.Rect()  # left,top,width,height
 player_surf= player_walk[player_index]
 player_rect = player_surf.get_rect(bottomleft=(100, 500))  # create rectangle around the surface
@@ -157,14 +159,14 @@ while True:
     if game_active:
         screen.blit(back_surface, (0, 0))  # adding the surface to the display surface with given position
         screen.blit(ground_surface, (0, 450))
-        pygame.draw.rect(screen, "#99DBF5", text_rect)
-        pygame.draw.rect(screen, 'Green', text_rect, 10)
+        # pygame.draw.rect(screen, "#99DBF5", text_rect)
+        # pygame.draw.rect(screen, 'Green', text_rect, 10)
         
-        #drawing a line that follow mouse
-        # pygame.draw.line(screen, 'Gold', (0,0), pygame.mouse.get_pos(),10)
-        #drawing a circle
-        # pygame.draw.ellipse(screen, 'Brown', pygame.Rect(50, 200, 100, 100))  # left,top,width,eight
-        screen.blit(text_surface, text_rect)
+        # #drawing a line that follow mouse
+        # # pygame.draw.line(screen, 'Gold', (0,0), pygame.mouse.get_pos(),10)
+        # #drawing a circle
+        # # pygame.draw.ellipse(screen, 'Brown', pygame.Rect(50, 200, 100, 100))  # left,top,width,eight
+        # screen.blit(text_surface, text_rect)
 
         score= display_score()
 

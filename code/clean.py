@@ -2,18 +2,34 @@ import pygame
 from sys import exit
 from random import randint
 
+# global hscore
+
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
-    score_surf = test_font.render(f'Score: {current_time}', True, "#DB005B")
-    score_rect = score_surf.get_rect(center=(376, 100))
+
+    score_surf = test_font2.render(f'Score: {current_time}', True, "#3E001F")
+    score_rect = score_surf.get_rect(topleft=(350, 10))
+    pygame.draw.rect(screen, "#C147E9", score_rect)
+    pygame.draw.rect(screen, '#645CBB', score_rect, 3)
     screen.blit(score_surf, score_rect)
+
+    cur_score=score
+
+    # if cur_score>hscore:
+    #     hscore=cur_score
+    hscore_surf = test_font2.render(f'Highest Score: {cur_score}', True, "#3E001F")
+    hscore_rect = hscore_surf.get_rect(topleft=(15,10))
+    pygame.draw.rect(screen, "#57C5B6", hscore_rect)
+    pygame.draw.rect(screen, '#159895', hscore_rect, 3)
+    screen.blit(hscore_surf, hscore_rect)
+
     return current_time
 
 def obstacle_movement(obstacle_list):
     if obstacle_list:
         for obstacle_rect in obstacle_list:
             obstacle_rect.x -= 5
-            if obstacle_rect.bottom == 500:
+            if obstacle_rect.bottom == 587:
                 screen.blit(bug_surface, obstacle_rect)
             else:
                 screen.blit(fly_surface, obstacle_rect)
@@ -32,7 +48,7 @@ def collisions(player, obstacles):
 def player_animation():
     global player_surf, player_index
 
-    if player_rect.bottom<480:
+    if player_rect.bottom<580:
         player_surf= player_jump
     else:
         player_index += 0.12
@@ -41,25 +57,23 @@ def player_animation():
         player_surf = player_walk[int(player_index)]
 
 pygame.init()
-screen = pygame.display.set_mode((752, 600))
+screen = pygame.display.set_mode((1024, 680))
 screen.fill('White')
 pygame.display.set_caption("Runner")
 clock = pygame.time.Clock()
 
 test_font = pygame.font.Font("font/Comica Boom.otf", 50)
+test_font2 = pygame.font.Font("font/Comica Boom.otf", 30)
 
 game_active = False
 start_time = 0
 score = 0
 
-back_surface = pygame.image.load('image/back.gif').convert()
-ground_surface = pygame.image.load('image/ground1.png').convert_alpha()
+back_surface = pygame.image.load('image/backG.jpg').convert()
+ground_surface = pygame.image.load('image/gro.png').convert_alpha()
 
-text_surface = test_font.render('Vaag Bug', True, '#080202')
-text_rect = text_surface.get_rect(center=(376, 40))
-
-bug_surface = pygame.image.load("image/bug50.png").convert_alpha()
-fly_surface = pygame.image.load("image/fly50.png").convert_alpha()
+bug_surface = pygame.image.load("image/en1.png").convert_alpha()
+fly_surface = pygame.image.load("image/fly_en1.png").convert_alpha()
 
 obstacle_rect_list = []
 
@@ -72,18 +86,18 @@ player_index=0
 player_jump= pygame.image.load("image/jp.png").convert_alpha()
 
 player_surf = player_walk[player_index]
-player_rect = player_surf.get_rect(bottomleft=(100, 500))
+player_rect = player_surf.get_rect(bottomleft=(200, 580))
 player_gravity = 0
 
 player_stand = pygame.image.load("image/gm.png").convert_alpha()
 player_stand = pygame.transform.rotozoom(player_stand, 0, 1)
-player_stand_rect = player_stand.get_rect(center=(376, 300))
+player_stand_rect = player_stand.get_rect(center=(450, 300))
 
-game_name = test_font.render('Vaag Bug', True, (111, 196, 169))
-game_name_rect = game_name.get_rect(center=(376, 80))
+game_name = test_font.render('Vaag Bug', True, "#4E4FEB")
+game_name_rect = game_name.get_rect(center=(450, 80))
 
-game_msg = test_font.render("Press space to run", True, (111, 196, 169))
-game_msg_rect = game_msg.get_rect(center=(376, 530))
+game_msg = test_font.render("Press space to run", True, "#8BE8E5")
+game_msg_rect = game_msg.get_rect(center=(450, 530))
 
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
@@ -103,40 +117,38 @@ while True:
                 start_time = int(pygame.time.get_ticks() / 1000)
         if event.type == obstacle_timer and game_active:
             if randint(0, 2):
-                obstacle_rect_list.append(bug_surface.get_rect(bottomright=(randint(1000, 1200), 500)))
+                obstacle_rect_list.append(bug_surface.get_rect(bottomright=(randint(1000, 1200), 587)))
             else:
-                obstacle_rect_list.append(fly_surface.get_rect(bottomright=(randint(1000, 1200), 200)))
+                obstacle_rect_list.append(fly_surface.get_rect(bottomright=(randint(1000, 1200), 330)))
 
     if game_active:
         screen.blit(back_surface, (0, 0))
-        screen.blit(ground_surface, (0, 450))
-
-        # pygame.draw.rect(screen, "#99DBF5", score_msg_rect)
-        # pygame.draw.rect(screen, 'Green', score_msg_rect, 10)
-        # screen.blit(score_msg, score_msg_rect)
+        screen.blit(ground_surface, (0, 520))
 
         score = display_score()
 
         player_gravity += 1
         player_rect.y += player_gravity
 
-        if player_rect.bottom >= 480:
-            player_rect.bottom = 480
+        if player_rect.bottom >= 580:
+            player_rect.bottom = 580
         player_animation()
         screen.blit(player_surf, player_rect)
 
         obstacle_rect_list = obstacle_movement(obstacle_rect_list)
         
+        
+
         game_active = collisions(player_rect, obstacle_rect_list)
     else:
-        screen.fill((94, 129, 162))
+        screen.fill("#071952")
         screen.blit(player_stand, player_stand_rect)
         obstacle_rect_list.clear()
-        player_rect.bottomleft = (200, 480)
+        player_rect.bottomleft = (200, 580)
         player_gravity = 0
 
-        score_msg = test_font.render(f'Your Score: {score}', True, '#0C134F')
-        score_msg_rect = score_msg.get_rect(center=(376, 530))
+        score_msg = test_font.render(f'Your Score: {score}', True, '#8696FE')
+        score_msg_rect = score_msg.get_rect(center=(450, 530))
         screen.blit(game_name, game_name_rect)
 
         if score == 0:

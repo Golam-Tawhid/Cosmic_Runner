@@ -2,8 +2,6 @@ import pygame
 from sys import exit
 from random import randint
 
-# global hscore
-
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
 
@@ -13,11 +11,7 @@ def display_score():
     pygame.draw.rect(screen, '#645CBB', score_rect, 3)
     screen.blit(score_surf, score_rect)
 
-    cur_score=score
-
-    # if cur_score>hscore:
-    #     hscore=cur_score
-    hscore_surf = test_font2.render(f'Highest Score: {cur_score}', True, "#3E001F")
+    hscore_surf = test_font2.render(f'Highest Score: {hi_score}', True, "#3E001F")
     hscore_rect = hscore_surf.get_rect(topleft=(15,10))
     pygame.draw.rect(screen, "#57C5B6", hscore_rect)
     pygame.draw.rect(screen, '#159895', hscore_rect, 3)
@@ -30,7 +24,7 @@ def obstacle_movement(obstacle_list):
         for obstacle_rect in obstacle_list:
             obstacle_rect.x -= 5
             if obstacle_rect.bottom == 587:
-                screen.blit(bug_surface, obstacle_rect)
+                screen.blit(enemy_surf, obstacle_rect)
             else:
                 screen.blit(fly_surface, obstacle_rect)
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > 0]
@@ -68,12 +62,27 @@ test_font2 = pygame.font.Font("font/Comica Boom.otf", 30)
 game_active = False
 start_time = 0
 score = 0
+hi_score=0
+
+bg_music1 = pygame.mixer.Sound("audio/space_line.mp3")
+bg_music2 = pygame.mixer.Sound("audio/gamemusic.mp3")
+jump_music = pygame.mixer.Sound("audio/jump.mp3")
+jump_music.set_volume(0.5)
+bg_music1.play(loops=-1)
 
 back_surface = pygame.image.load('image/backG.jpg').convert()
 ground_surface = pygame.image.load('image/gro.png').convert_alpha()
 
-bug_surface = pygame.image.load("image/en1.png").convert_alpha()
 fly_surface = pygame.image.load("image/fly_en1.png").convert_alpha()
+
+enemy_frame1 = pygame.image.load("image/enm1.png").convert_alpha()
+enemy_frame2 = pygame.image.load("image/enm2.png").convert_alpha()
+enemy_frame3 = pygame.image.load("image/enm3.png").convert_alpha()
+enemy_frame4 = pygame.image.load("image/enm4.png").convert_alpha()
+enemy_frame5 = pygame.image.load("image/enm5.png").convert_alpha()
+enemy_frames=[enemy_frame1, enemy_frame2, enemy_frame3, enemy_frame4, enemy_frame5]
+enemy_frame_index=0
+enemy_surf=enemy_frames[enemy_frame_index]
 
 obstacle_rect_list = []
 
@@ -102,6 +111,9 @@ game_msg_rect = game_msg.get_rect(center=(450, 530))
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
 
+enemy_animation_timer= pygame.USEREVENT + 2
+pygame.time.set_timer(enemy_animation_timer, 300)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -111,21 +123,33 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rect.bottom >= 480:
                     player_gravity = -21
+                    jump_music.play()
         else:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 game_active = True
                 start_time = int(pygame.time.get_ticks() / 1000)
-        if event.type == obstacle_timer and game_active:
-            if randint(0, 2):
-                obstacle_rect_list.append(bug_surface.get_rect(bottomright=(randint(1000, 1200), 587)))
-            else:
-                obstacle_rect_list.append(fly_surface.get_rect(bottomright=(randint(1000, 1200), 330)))
+
+        if game_active:
+            if event.type == obstacle_timer:
+                if randint(0, 2):
+                    obstacle_rect_list.append(enemy_surf.get_rect(bottomright=(randint(1000, 1200), 587)))
+                else:
+                    obstacle_rect_list.append(fly_surface.get_rect(bottomright=(randint(1000, 1200), 330)))
+   
+            if event.type == enemy_animation_timer:
+                if enemy_frame_index>4:
+                    enemy_frame_index=0
+                enemy_surf= enemy_frames[enemy_frame_index]
+                enemy_frame_index+=1
 
     if game_active:
         screen.blit(back_surface, (0, 0))
         screen.blit(ground_surface, (0, 520))
 
         score = display_score()
+
+        if score>=hi_score:
+            hi_score=score
 
         player_gravity += 1
         player_rect.y += player_gravity
@@ -136,10 +160,8 @@ while True:
         screen.blit(player_surf, player_rect)
 
         obstacle_rect_list = obstacle_movement(obstacle_rect_list)
-        
-        
-
         game_active = collisions(player_rect, obstacle_rect_list)
+
     else:
         screen.fill("#071952")
         screen.blit(player_stand, player_stand_rect)

@@ -20,12 +20,12 @@ def obstacle_movement(obstacle_list):
             obstacle_rect.x -= 5
 
             if obstacle_rect.bottom == 500:
-                screen.blit(bug_surface, obstacle_rect)
+                screen.blit(enemy_surf, obstacle_rect)
             else:
                 screen.blit(fly_surface, obstacle_rect)
 
 
-            # screen.blit(bug_surface, obstacle_rect) # rectangle and surface on the same position
+            # screen.blit(enemy_surf, obstacle_rect) # rectangle and surface on the same position
         obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > 0]
 
         return obstacle_list
@@ -70,17 +70,24 @@ score = 0
 
 # image surface
 back_surface = pygame.image.load('image/back.gif').convert()
-ground_surface = pygame.image.load('image/ground1.png').convert_alpha()  # convert used to make the game run faster
+ground_surface = pygame.image.load('image/gro.png').convert_alpha()  # convert used to make the game run faster
 
 # text surface
 text_surface = test_font.render('Vaag Bug', True, '#080202')  # text, AA(Anti-aliasing), color
 text_rect = text_surface.get_rect(center = (376, 40)) 
 # image surface
 # obstacles
-bug_surface = pygame.image.load("image/bug50.png").convert_alpha()
-# bug_rect = bug_surface.get_rect(topleft=(800, 430))
+enemy_frame1 = pygame.image.load("image/enm1.png").convert_alpha()
+enemy_frame2 = pygame.image.load("image/enm2.png").convert_alpha()
+enemy_frame3 = pygame.image.load("image/enm3.png").convert_alpha()
+enemy_frame4 = pygame.image.load("image/enm4.png").convert_alpha()
+enemy_frame5 = pygame.image.load("image/enm5.png").convert_alpha()
+enemy_frames=[enemy_frame1, enemy_frame2, enemy_frame3, enemy_frame4, enemy_frame5]
+enemy_frame_index=0
+enemy_surf=enemy_frames[enemy_frame_index]
+# bug_rect = enemy_surf.get_rect(topleft=(800, 430))
 
-fly_surface=  pygame.image.load("image/fly50.png").convert_alpha()
+fly_surface=  pygame.image.load("image/fly_en1.png").convert_alpha()
 
 
 obstacle_rect_list = []
@@ -117,6 +124,9 @@ game_msg_rect = game_msg.get_rect(center=(376, 530))
 obstacle_timer = pygame.USEREVENT + 1 #custom user event
 pygame.time.set_timer(obstacle_timer, 1500) #trigger the event
 
+enemy_animation_timer= pygame.USEREVENT + 1
+pygame.time.set_timer(enemy_animation_timer, 500)
+
 
 while True:
     # draw all elements here
@@ -149,16 +159,26 @@ while True:
         #         print('Collision')
         # pygame.MOUSEBUTTONUP / MOUSEBUTTONDOWN to check if mouse button pressed or released
         #triggering the timer
-        if event.type== obstacle_timer and game_active:
-            if randint(0, 2):
-                obstacle_rect_list.append(bug_surface.get_rect(bottomright= (randint(1000,1200), 500)))
-            else:
-                obstacle_rect_list.append(fly_surface.get_rect(bottomright= (randint(1000,1200), 200)))
+        if game_active:
+            if event.type== obstacle_timer:
+                if randint(0, 2):
+                    obstacle_rect_list.append(enemy_surf.get_rect(bottomright= (randint(1000,1200), 500)))
+                else:
+                    obstacle_rect_list.append(fly_surface.get_rect(bottomright= (randint(1000,1200), 200)))
 
+            if event.type == enemy_animation_timer:
+                # if enemy_frame_index==0:
+                #     enemy_frame_index=1
+                # else:
+                #     enemy_frame_index=0
+                if enemy_frame_index>4:
+                    enemy_frame_index=0
+                enemy_surf= enemy_frames[enemy_frame_index]
+                enemy_frame_index+=1
 
     if game_active:
         screen.blit(back_surface, (0, 0))  # adding the surface to the display surface with given position
-        screen.blit(ground_surface, (0, 450))
+        screen.blit(ground_surface, (0, 430))
         # pygame.draw.rect(screen, "#99DBF5", text_rect)
         # pygame.draw.rect(screen, 'Green', text_rect, 10)
         
@@ -178,7 +198,7 @@ while True:
         # # bug_x -= 3
         # # if bug_x == -100:
         # #     bug_x = 800
-        # screen.blit(bug_surface, bug_rect)
+        # screen.blit(enemy_surf, bug_rect)
 
 
         # player_rect.left += 1

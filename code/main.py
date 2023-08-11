@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 from random import randint
+import math
 
 def display_score():
     # Calculate the current time in seconds
@@ -51,7 +52,7 @@ def player_animation():
     if player_rect.bottom<580:
         player_surf= player_jump # Player is jumping
     else:
-        player_index += 0.12
+        player_index += 0.14
         if player_index >= len(player_run):
             player_index = 0
         player_surf = player_run[int(player_index)] # Player is running
@@ -78,8 +79,13 @@ jump_music.set_volume(0.5)
 bg_music2.play(loops=-1)
 
 # Load game assets
-back_surface = pygame.image.load('image/backG.jpg').convert()
-ground_surface = pygame.image.load('image/gro.png').convert_alpha()
+back_surface = pygame.image.load('image/backG.jpg').convert_alpha()
+bg = pygame.image.load("image/gro.png").convert_alpha()
+bg_width = bg.get_width()
+bg_rect = bg.get_rect()
+
+scroll = 0
+tiles = math.ceil(1024  / bg_width) + 1
 
 fly_surface = pygame.image.load("image/fly_en1.png").convert_alpha()
 
@@ -156,8 +162,16 @@ while True:
 
     if game_active:
         screen.blit(back_surface, (0, 0))
-        screen.blit(ground_surface, (0, 520))
+        for i in range(0, tiles):
+            screen.blit(bg, (i * bg_width + scroll, 520))
+            bg_rect.x = i * bg_width + scroll
 
+        #scroll background
+        scroll -= 3
+
+        #reset scroll
+        if abs(scroll) > bg_width:
+            scroll = 0
         score = display_score()
 
         if score>=hi_score:

@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 from random import randint,choice
+import math
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -129,8 +130,14 @@ player.add(Player())
 
 obstacle_group = pygame.sprite.Group()
 
-back_surface = pygame.image.load('image/backG.jpg').convert()
-ground_surface = pygame.image.load('image/gro.png').convert_alpha()
+back_surface = pygame.image.load('image/backG.jpg').convert_alpha()
+# ground_surface= pygame.image.load('image/gro.png').convert_alpha()
+bg = pygame.image.load("image/gro.png").convert_alpha()
+bg_width = bg.get_width()
+bg_rect = bg.get_rect()
+
+scroll = 0
+tiles = math.ceil(1024  / bg_width) + 1
 
 intro = pygame.image.load("image/gm.png").convert_alpha()
 intro = pygame.transform.rotozoom(intro, 0, 1)
@@ -160,7 +167,16 @@ while True:
 
     if game_active:
         screen.blit(back_surface, (0, 0))
-        screen.blit(ground_surface, (0, 520)) 
+        for i in range(0, tiles):
+            screen.blit(bg, (i * bg_width + scroll, 520))
+            bg_rect.x = i * bg_width + scroll
+
+        #scroll background
+        scroll -= 3
+
+        #reset scroll
+        if abs(scroll) > bg_width:
+            scroll = 0 
 
         score = display_score()
 

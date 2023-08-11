@@ -7,14 +7,14 @@ def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time
 
     # Render and display the current score
-    score_surf = test_font2.render(f'Score: {current_time}', True, "#3E001F")
+    score_surf = font2.render(f'Score: {current_time}', True, "#3E001F")
     score_rect = score_surf.get_rect(topleft=(350, 10))
     pygame.draw.rect(screen, "#C147E9", score_rect) # Draw a colored rectangle behind the score
     pygame.draw.rect(screen, '#645CBB', score_rect, 3) # Draw a border around the score rectangle
     screen.blit(score_surf, score_rect)
 
     # Render and display the highest score
-    hscore_surf = test_font2.render(f'Highest Score: {hi_score}', True, "#3E001F")
+    hscore_surf = font2.render(f'Highest Score: {hi_score}', True, "#3E001F")
     hscore_rect = hscore_surf.get_rect(topleft=(15,10))
     pygame.draw.rect(screen, "#57C5B6", hscore_rect)
     pygame.draw.rect(screen, '#159895', hscore_rect, 3)
@@ -31,7 +31,7 @@ def obstacle_movement(obstacle_list):
                 screen.blit(enemy_surf, obstacle_rect) # Display ground enemy obstacle
             else:
                 screen.blit(fly_surface, obstacle_rect) # Display flying enemy obstacle
-        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > 0]
+        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
         return obstacle_list
     else:
         return []
@@ -52,18 +52,18 @@ def player_animation():
         player_surf= player_jump # Player is jumping
     else:
         player_index += 0.12
-        if player_index >= len(player_walk):
+        if player_index >= len(player_run):
             player_index = 0
-        player_surf = player_walk[int(player_index)] # Player is running
+        player_surf = player_run[int(player_index)] # Player is running
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 680))
 screen.fill('White')
-pygame.display.set_caption("Runner")
+pygame.display.set_caption("2D Runner")
 clock = pygame.time.Clock()
 
 test_font = pygame.font.Font("font/Comica Boom.otf", 70)
-test_font2 = pygame.font.Font("font/Comica Boom.otf", 30)
+font2 = pygame.font.Font("font/Comica Boom.otf", 30)
 
 game_active = False
 start_time = 0
@@ -75,7 +75,7 @@ bg_music1 = pygame.mixer.Sound("audio/space_line.mp3")
 bg_music2 = pygame.mixer.Sound("audio/gamemusic.mp3")
 jump_music = pygame.mixer.Sound("audio/jump.mp3")
 jump_music.set_volume(0.5)
-bg_music1.play(loops=-1)
+bg_music2.play(loops=-1)
 
 # Load game assets
 back_surface = pygame.image.load('image/backG.jpg').convert()
@@ -89,9 +89,9 @@ enemy_frame2 = pygame.image.load("image/enm2.png").convert_alpha()
 enemy_frame3 = pygame.image.load("image/enm3.png").convert_alpha()
 enemy_frame4 = pygame.image.load("image/enm4.png").convert_alpha()
 enemy_frame5 = pygame.image.load("image/enm5.png").convert_alpha()
-enemy_frames=[enemy_frame1, enemy_frame2, enemy_frame3, enemy_frame4, enemy_frame5, enemy_frame4, enemy_frame3, enemy_frame2]
-enemy_frame_index=0
-enemy_surf=enemy_frames[enemy_frame_index]
+enemy_frames = [enemy_frame1, enemy_frame2, enemy_frame3, enemy_frame4, enemy_frame5, enemy_frame4, enemy_frame3, enemy_frame2]
+enemy_frame_index = 0
+enemy_surf = enemy_frames[enemy_frame_index]
 
 # Initialize obstacle list
 obstacle_rect_list = []
@@ -100,30 +100,30 @@ player_walk1 = pygame.image.load("image/rn1.png").convert_alpha()
 player_walk2 = pygame.image.load("image/rn2.png").convert_alpha() 
 player_walk3 = pygame.image.load("image/rn3.png").convert_alpha()
 player_walk4 = pygame.image.load("image/rn4.png").convert_alpha()
-player_walk=[player_walk2, player_walk3, player_walk4, player_walk1]
-player_index=0
-player_jump= pygame.image.load("image/jp.png").convert_alpha()
+player_run = [player_walk2, player_walk3, player_walk4, player_walk1]
+player_index = 0
+player_jump = pygame.image.load("image/jp.png").convert_alpha()
 
-player_surf = player_walk[player_index]
+player_surf = player_run[player_index]
 player_rect = player_surf.get_rect(bottomleft=(200, 580))
 player_gravity = 0
 
-player_stand = pygame.image.load("image/gm.png").convert_alpha()
-player_stand = pygame.transform.rotozoom(player_stand, 0, 1)
-player_stand_rect = player_stand.get_rect(center=(450, 300))
+intro = pygame.image.load("image/gm.png").convert_alpha()
+intro = pygame.transform.rotozoom(intro, 0, 1)
+intro_rect = intro.get_rect(center=(512, 300))
 
-game_name = test_font.render('Cosmic Runner', True, "#4E4FEB")
-game_name_rect = game_name.get_rect(center=(450, 80))
+game_name = test_font.render('Cosmic Runner', True, "#FFD93D")
+game_name_rect = game_name.get_rect(center=(512, 80))
 
 game_msg = test_font.render("Press space to run", True, "#8BE8E5")
-game_msg_rect = game_msg.get_rect(center=(450, 530))
+game_msg_rect = game_msg.get_rect(center=(512, 530))
 
 # Set up obstacle and enemy animation timers
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
 
 enemy_animation_timer= pygame.USEREVENT + 2
-pygame.time.set_timer(enemy_animation_timer, 200)
+pygame.time.set_timer(enemy_animation_timer, 250)
 
 while True:
     for event in pygame.event.get():
@@ -149,7 +149,7 @@ while True:
 
             # Animate enemy frames on enemy animation timer
             if event.type == enemy_animation_timer:
-                if enemy_frame_index>4:
+                if enemy_frame_index>7:
                     enemy_frame_index=0
                 enemy_surf= enemy_frames[enemy_frame_index]
                 enemy_frame_index+=1
@@ -179,14 +179,14 @@ while True:
     else:
         # Render the game-over screen when the game is not active
         screen.fill("#071952")
-        screen.blit(player_stand, player_stand_rect)
+        screen.blit(intro, intro_rect)
         obstacle_rect_list.clear()
         player_rect.bottomleft = (200, 580)
         player_gravity = 0
 
         # Render the score and game messages
         score_msg = test_font.render(f'Your Score: {score}', True, '#8696FE')
-        score_msg_rect = score_msg.get_rect(center=(450, 530))
+        score_msg_rect = score_msg.get_rect(center=(512, 530))
         screen.blit(game_name, game_name_rect)
 
         if score == 0:

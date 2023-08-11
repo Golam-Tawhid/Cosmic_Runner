@@ -41,7 +41,6 @@ class Player(pygame.sprite.Sprite):
                 self.player_index=0
             self.image = self.player_walk[int(self.player_index)]
 
-
     def update(self):
         self.player_input()
         self.apply_gravity()
@@ -51,10 +50,11 @@ class Obstacle(pygame.sprite.Sprite):
     def __init__(self,type):
         super().__init__()
 
+        # Initialize the obstacle based on its type (fly or enemy)
         if type == "fly":
             fly_1 = pygame.image.load("image/fly_en1.png").convert_alpha()
-            self.frames = [fly_1]
-            y_pos = 330
+            self.frames = [fly_1] 
+            y_pos = 330 # Vertical position of the obstacle
         else:
             enemy_frame1 = pygame.image.load("image/enm1.png").convert_alpha()
             enemy_frame2 = pygame.image.load("image/enm2.png").convert_alpha()
@@ -62,16 +62,16 @@ class Obstacle(pygame.sprite.Sprite):
             enemy_frame4 = pygame.image.load("image/enm4.png").convert_alpha()
             enemy_frame5 = pygame.image.load("image/enm5.png").convert_alpha()
             self.frames = [enemy_frame1, enemy_frame2, enemy_frame3, enemy_frame4, enemy_frame5]
-            y_pos = 587
+            y_pos = 587 # Vertical position of the obstacle
 
-        self.animation_index=0
-        self.image=self.frames[self.animation_index]
-        self.rect = self.image.get_rect(midbottom = (randint(1000,1200),y_pos))
+        self.animation_index=0 # Current frame index
+        self.image=self.frames[self.animation_index] # Current frame image
+        self.rect = self.image.get_rect(midbottom = (randint(1000,1200),y_pos)) # Obstacle's position
     def animation_state(self):
-        self.animation_index += 0.1
+        self.animation_index += 0.1 # Increment the animation index
         if self.animation_index >= len(self.frames):
-            self.animation_index=0
-        self.image = self.frames[int(self.animation_index)]
+            self.animation_index=0 # Reset animation index if it exceeds the frame count
+        self.image = self.frames[int(self.animation_index)] # Update the current frame image
 
     def update(self):
         self.animation_state()
@@ -79,8 +79,8 @@ class Obstacle(pygame.sprite.Sprite):
         self.destroy()
 
     def destroy(self):
-        if self.rect.x <= -100:
-            self.kill()
+        if self.rect.x <= -100: # If the obstacle is off the left edge of the screen
+            self.kill() # Remove the obstacle from the sprite group
 
 def display_score():
     current_time = int(pygame.time.get_ticks() / 1000) - start_time

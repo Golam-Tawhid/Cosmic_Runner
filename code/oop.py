@@ -14,6 +14,13 @@ class Player(pygame.sprite.Sprite):
         self.player_index=0
         self.player_jump= pygame.image.load("image/jp.png").convert_alpha()
 
+        self.current_health = 1000
+        self.target_health = 1000
+        self.max_health = 1000
+        self.health_bar_length = 400
+        self.health_ratio = self.max_health / self.health_bar_length
+        self.health_change_speed = 5
+
         self.image = self.player_run[self.player_index]
         self.rect = self.image.get_rect(midbottom = (250,580))
         self.gravity = 0
@@ -23,7 +30,7 @@ class Player(pygame.sprite.Sprite):
 
     def player_input(self):
         keys= pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] and self.rect.bottom >=580:
+        if score!=0 and keys[pygame.K_SPACE] and self.rect.bottom >=580:
             self.gravity =- 23
             self.jump_sound.play()
     
@@ -42,10 +49,40 @@ class Player(pygame.sprite.Sprite):
                 self.player_index=0
             self.image = self.player_run[int(self.player_index)]
 
+    def get_damage(self):
+        if self.target_health > 0:
+            self.target_health -= 5
+        if self.target_health < 0:
+            self.target_health = 0
+
+    def advanced_health(self):
+        transition_width = 0
+        transition_color = (255,0,0)
+        
+        if self.current_health < self.target_health:
+            self.current_health += self.health_change_speed
+            transition_width = int((self.target_health - self.current_health) / self.health_ratio)
+            transition_color = (0,255,0)
+        
+        if self.current_health > self.target_health:
+            self.current_health -= self.health_change_speed 
+            transition_width = int((self.target_health - self.current_health) / self.health_ratio)
+            transition_color = (255,255,0)
+
+        health_bar_width = int(self.current_health / self.health_ratio)
+        health_bar = pygame.Rect(10,90,health_bar_width,25)
+        transition_bar = pygame.Rect(health_bar.right,45,transition_width,25)
+		
+        pygame.draw.rect(screen,("Yellow"),(10,90,self.health_bar_length,25))
+        pygame.draw.rect(screen,(255,0,0),health_bar)
+        pygame.draw.rect(screen,transition_color,transition_bar)	
+        pygame.draw.rect(screen,(255,255,255),(10,90,self.health_bar_length,25),4)
+
     def update(self):
         self.player_input()
         self.apply_gravity()
         self.animation_state()
+        self.advanced_health()
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self,type):
@@ -102,10 +139,13 @@ def display_score():
 
 def collision_sprite():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
-        obstacle_group.empty()
-        return False
+        player.sprite.get_damage()
+        if player.sprite.target_health<=0:
+            return False
+        else:
+            return True
     else:
-        return True
+        return True   
 
 pygame.init()
 screen = pygame.display.set_mode((1024, 680))
@@ -131,7 +171,6 @@ player.add(Player())
 obstacle_group = pygame.sprite.Group()
 
 back_surface = pygame.image.load('image/backG.jpg').convert_alpha()
-# ground_surface= pygame.image.load('image/gro.png').convert_alpha()
 bg = pygame.image.load("image/gro.png").convert_alpha()
 bg_width = bg.get_width()
 bg_rect = bg.get_rect()
@@ -192,17 +231,22 @@ while True:
         game_active = collision_sprite()
 
     else:
-        screen.fill("#071952")
+        screen.fill("#27374D")
         screen.blit(intro, intro_rect)
 
-        score_msg = test_font.render(f'Your Score: {score}', True, '#8696FE')
+        score_msg = test_font.render(f'Your Score: {score}', True, '#FF78C4')
         score_msg_rect = score_msg.get_rect(center=(512, 530))
 
-        screen.blit(game_name, game_name_rect)
+        game_over = test_font.render("GAME OVER", True, '#B31312')
+        game_over_rect = game_over.get_rect(center=(512, 80))
+
+        
 
         if score == 0:
+            screen.blit(game_name, game_name_rect)
             screen.blit(game_msg, game_msg_rect)
         else:
+            screen.blit(game_over, game_over_rect)
             screen.blit(score_msg, score_msg_rect)
             
     pygame.display.update()

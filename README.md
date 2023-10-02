@@ -1,17 +1,20 @@
 # Cosmic Runner
 
-**Cosmic Runner** is a 2D endless runner game created using the **Pygame** library. In this exciting and challenging game, players control a character as they navigate through obstacles, avoid enemies, and aim for the highest score.
+**Cosmic Runner** is a 2D endless runner game created using the **Pygame** library. In this exciting and challenging game, players control a character as they navigate through obstacles, avoid enemies, and aim for the highest score. And there's a **Health** Bar to monitor your survival!
 
 ## How to Play
 - Run the game by pressing the SPACE key.
 - Use the SPACE key to make your character jump and avoid obstacles.
-- Watch out for flying enemies! Colliding with them will end the game.
+- Watch out for flying enemies! Colliding with them will decrease your health.
+- Keep an eye on your Health Bar. When it reaches zero, it's game over.
 - The longer you survive, the higher your score.
 
 ## Features
 - **Endless Running:** The game offers an endless running experience, providing an exciting challenge for players to beat their previous high scores.
 
 - **Dynamic Obstacles:** Navigate through a variety of obstacles, each with its own movement patterns, creating an engaging and unpredictable gameplay experience.
+  
+- **Health Bar:** Your health matters! Each collision with enemies reduces your health. Keep it from reaching zero to stay in the game.
 
 - **High Score Tracking:** Compete with yourself by striving for the highest score. The game displays both the current score and the highest achieved score.
 
@@ -25,11 +28,13 @@ Creating **Cosmic Runner** using Pygame was a valuable learning experience. Thro
 2. **Sprite Animation:** I mastered the art of sprite animation, which is crucial for creating dynamic and visually appealing characters and obstacles.
 
 3. **Collision Detection:** I implemented collision detection logic, a fundamental aspect of gaming, to detect interactions between the player's character and obstacles/enemies.
+   
+4. **Health Management:** I introduced a Health Bar feature, requiring me to manage the player's health and implement a game-over condition when health reaches zero.
 
-4. **Game State Management:** I learned how to manage different game states, such as the main menu, gameplay, and game-over screens, to provide a smooth user experience.
+5. **Game State Management:** I learned how to manage different game states, such as the main menu, gameplay, and game-over screens, to provide a smooth user experience.
 
-5. **Score Tracking:** I integrated a scoring system that tracks and displays the player's score, enhancing the competitive aspect of the game.
+6. **Score Tracking:** I integrated a scoring system that tracks and displays the player's score, enhancing the competitive aspect of the game.
 
-6. **Audio Integration:** I integrated background music and sound effects to create an immersive gaming environment.
+7. **Audio Integration:** I integrated background music and sound effects to create an immersive gaming environment.
 
-**Cosmic Runner** not only showcases my newfound skills in Pygame but also provides an entertaining and challenging gaming experience. I'm excited to share this game with others and continue exploring the world of game development. Give it a try and see how far you can run in the cosmic universe!
+**Cosmic Runner** not only showcases my newfound skills in Pygame but also provides an entertaining and challenging gaming experience. I'm excited to share this game with others and continue exploring the world of game development. Give it a try, safeguard your health, and see how far you can run in the cosmic universe!
